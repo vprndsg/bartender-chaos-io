@@ -1,0 +1,68 @@
+{
+  "title": "ChaosNPC",
+  "root": "root",
+  "nodes": {
+    "root": { "id": "root", "name": "Sequence", "children": ["choose", "stamp"] },
+
+    "choose": { "id": "choose", "name": "UtilitySelector", "children": ["t_insult", "t_spill", "t_pickpocket", "t_glass", "t_fight", "t_hide", "t_flee"] },
+    "stamp":  { "id": "stamp",  "name": "RecordOutcome", "properties": { "tacticKeyVar": "last_tactic", "okVar": "last_outcome_ok" } },
+
+    "t_insult": { "id": "t_insult", "name": "Tactic", "properties": {
+      "name": "insult",
+      "scoreExpr": "0.6 + 0.2*drunk + 0.1*crowd - 0.2*guard + 0.3*(sr-0.5) + 0.05*lastSec",
+      "cooldownMs": 4000
+    }, "child": "seq_insult" },
+    "seq_insult": { "id": "seq_insult", "name": "Sequence", "children": ["say_insult", "div_insult"] },
+    "say_insult": { "id": "say_insult", "name": "QueueSay", "properties": { "speaker": "ChaosNPC", "text": "Hey, nice face." } },
+    "div_insult": { "id": "div_insult", "name": "QueueDivert", "properties": { "path": "npc.chaos.insult" } },
+
+    "t_spill": { "id": "t_spill", "name": "Tactic", "properties": {
+      "name": "spill",
+      "scoreExpr": "0.5 + 0.3*crowd - 0.2*guard + 0.2*(sr-0.5) + 0.02*lastSec",
+      "cooldownMs": 6000
+    }, "child": "div_spill" },
+    "div_spill": { "id": "div_spill", "name": "QueueDivert", "properties": { "path": "npc.chaos.spill" } },
+
+    "t_pickpocket": { "id": "t_pickpocket", "name": "Tactic", "properties": {
+      "name": "pickpocket",
+      "scoreExpr": "0.4 + 0.4*crowd - 0.6*guard + 0.5*(sr-0.5) + 0.01*lastSec",
+      "cooldownMs": 8000
+    }, "child": "div_pick" },
+    "div_pick": { "id": "div_pick", "name": "QueueDivert", "properties": { "path": "npc.chaos.pickpocket" } },
+
+    "t_glass": { "id": "t_glass", "name": "Tactic", "properties": {
+      "name": "break_glass",
+      "scoreExpr": "0.3 + 0.2*drunk + 0.3*(sr-0.5) - 0.4*guard + 0.02*lastSec",
+      "cooldownMs": 9000
+    }, "child": "div_glass" },
+    "div_glass": { "id": "div_glass", "name": "QueueDivert", "properties": { "path": "npc.chaos.break_glass" } },
+
+    "t_fight": { "id": "t_fight", "name": "Tactic", "properties": {
+      "name": "start_fight",
+      "scoreExpr": "0.2 + 0.2*drunk + 0.2*heat - 0.3*guard + 0.25*(sr-0.5) + 0.02*lastSec",
+      "cooldownMs": 12000
+    }, "child": "div_fight" },
+    "div_fight": { "id": "div_fight", "name": "QueueDivert", "properties": { "path": "npc.chaos.fight" } },
+
+    "t_hide": { "id": "t_hide", "name": "Tactic", "properties": {
+      "name": "hide",
+      "scoreExpr": "0.1 + 0.7*guard + 0.1*heat - 0.3*crowd - 0.4*drunk + 0.02*lastSec",
+      "cooldownMs": 5000
+    }, "child": "div_hide" },
+    "div_hide": { "id": "div_hide", "name": "QueueDivert", "properties": { "path": "npc.chaos.hide" } },
+
+    "t_flee": { "id": "t_flee", "name": "Tactic", "properties": {
+      "name": "flee",
+      "scoreExpr": "0.05 + 0.9*guard + 0.3*heat - 0.2*crowd - 0.2*trust",
+      "cooldownMs": 15000
+    }, "child": "div_flee" },
+    "div_flee": { "id": "div_flee", "name": "QueueDivert", "properties": { "path": "npc.chaos.flee" } }
+  },
+  "custom_nodes": [
+    { "name": "UtilitySelector", "category": "composite" },
+    { "name": "Tactic", "category": "decorator" },
+    { "name": "RecordOutcome", "category": "action" },
+    { "name": "QueueSay", "category": "action" },
+    { "name": "QueueDivert", "category": "action" }
+  ]
+}
