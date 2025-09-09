@@ -290,10 +290,28 @@ story.BindExternalFunction("report_outcome", (tactic, ok)=>{
 });
 
 /* ---------- BUILD CHAOS TREE ---------- */
-async function loadJSON(p){ const r=await fetch(p); if(!r.ok) throw new Error(p); return r.json(); }
-const chaosDef = await loadJSON("./trees/chaos_npc.json");
-const chaosTree = new b3.BehaviorTree();
-chaosTree.load(chaosDef, { UtilitySelector, Tactic, RecordOutcome, QueueSay, QueueDivert });
+// Override loadJSON to disable caching and throw detailed errors.
+async function loadJSON(p){
+  const r = await fetch(p, { cache: "no-store" });
+  if (!r.ok) {
+    // Provide more context on failure so it's easier to diagnose.
+    throw new Error(`fetch ${p} ${r.status} ${r.statusText}`);
+  }
+  return r.json();
+}
+
+// Initialize the chaos NPC behavior tree. If the JSON fails to load,
+// catch the error and skip AI initialization without blocking rendering.
+let chaosTree;
+try {
+  const chaosDef = await loadJSON("./trees/chaos_npc.json");
+  chaosTree = new b3.BehaviorTree();
+  chaosTree.load(chaosDef, { UtilitySelector, Tactic, RecordOutcome, QueueSay, QueueDivert });
+} catch (e) {
+  // If the tree fails to load, notify via sys() and allow the game to run
+  // without the chaos NPC. The AI tick will guard on chaosTree below.
+  sys('AI init skipped: ' + e.message);
+}
 
 /* ---------- AI LOOP ---------- */
 let chaosActive = true;
@@ -307,7 +325,7 @@ function tickAI(dt, nowMs){
   v.heat = clamp(v.heat||0, 0, 99);
   v.trust = clamp(v.trust||0, 0, 99);
   v.mood  = clamp(v.mood||0, 0, 99);
-  if(chaosActive){
+  if (chaosActive && chaosTree) {
     chaosTree.tick({ story }, bb);
     flushDirectives();
   }
