@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Bartender • Chaos AI</title>
+  <style>
+    html, body { margin:0; padding:0; height:100%; background:#000; color:#eee; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; touch-action:none; }
+    #view { display:block; width:100vw; height:100vh; image-rendering:pixelated; image-rendering:crisp-edges; background:#000; }
+
+    /* HUD */
+    #hud { position:fixed; left:0; right:0; bottom:0; pointer-events:none; }
+    #msg { margin:8px auto; padding:6px 10px; max-width:70ch; text-align:center; font-size:14px; background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.15); border-radius:6px; }
+    #hint { margin:6px auto 12px; padding:4px 8px; max-width:70ch; text-align:center; font-size:12px; color:#cfcfcf; opacity:1; transition:opacity 1.2s linear; }
+    #hint.fade { opacity:0; }
+
+    /* Dialogue feed */
+    #feed { position:fixed; left:10px; right:10px; bottom:96px; max-height:40vh; overflow:auto; padding:8px 10px; background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.12); border-radius:6px; pointer-events:auto; }
+    #feed p { margin:0 0 6px; line-height:1.35; font-size:12px; }
+    #feed .sys { opacity:.75; }
+    #feed .k { color:#f6b26b; } .v { color:#93c47d; }
+
+    /* Touch */
+    .pad { position:fixed; left:16px; bottom:16px; width:140px; height:140px; border-radius:70px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); backdrop-filter:blur(4px); touch-action:none; }
+    #stick { position:absolute; left:50%; top:50%; width:56px; height:56px; margin-left:-28px; margin-top:-28px; border-radius:28px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.2); }
+    #btnA { position:fixed; right:18px; bottom:28px; width:68px; height:68px; border-radius:34px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); color:#fff; font-size:20px; user-select:none; }
+
+    * { -webkit-user-select:none; user-select:none; }
+    button { touch-action:manipulation; }
+  </style>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="feed" aria-live="polite"></div>
+
+  <div id="hud">
+    <div id="msg"></div>
+    <div id="hint">WASD/arrows move. E/Space interact. F fullscreen. P pause. S screenshot.</div>
+  </div>
+
+  <div id="padL" class="pad"><div id="stick"></div></div>
+  <button id="btnA" aria-label="Interact">A</button>
+
+  <!-- Behavior3JS (global b3) -->
+  <script src="https://unpkg.com/behavior3js@0.2.2/libs/behavior3-0.2.2.js"></script>
+  <!-- Optional real inkjs (if you add a compiled story JSON); mocked if absent -->
+  <!-- <script defer src="https://cdn.jsdelivr.net/npm/inkjs@1.11.1/dist/ink.js"></script> -->
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
